@@ -1,0 +1,15 @@
+Type: Package
+Package: shinyappsCompiled
+Title: Deploy Golem Application with C++ to shinyapps.io
+Version: 0.1.0
+Authors@R: 
+    person("Jean-Marie", "Pivette", , "jmpivette@gmail.com", role = c("cre", "aut"))
+Description: This package is used to deployed Golem application that uses
+    RCpp to shinyapps.io. The application must be using "golem" framework
+    and be stored on Github.
+License: MIT + file LICENSE
+Imports: 
+    pkgload
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
