@@ -14,7 +14,7 @@ add_shinyapps_file <- function(
 
   where_deploy <- fs::path(pkg, "app.R")
 
-  ## Check if runaoo_funct exists
+  ## Check if runapp_funct exists
   if(is_exported(runapp_funct) == FALSE){
     cli::cat_bullet(
       "Error: '", runapp_funct,
@@ -23,6 +23,16 @@ add_shinyapps_file <- function(
     )
     return(invisible())
   }
+
+  ## Check if package is on Github (impossible to compile otherwise)
+  if(github_path(pkg) == ""){
+    cli::cat_bullet(
+      "Error: In order to use 'shinyappsCompiled' your package should be on Github",
+      bullet = "cross", bullet_col = "red"
+    )
+    return(invisible())
+  }
+
 
   ## Check if app.R file exists
   if(fs::file_exists(where_deploy)){
