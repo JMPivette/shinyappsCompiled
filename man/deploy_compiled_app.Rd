@@ -4,10 +4,14 @@
 \alias{deploy_compiled_app}
 \title{Deploy a compiled app to Shinyapps.io}
 \usage{
-deploy_compiled_app(pkg = pkgload::pkg_path(), new_deploy = FALSE)
+deploy_compiled_app(pkg = pkgload::pkg_path(), new_deploy = FALSE, ...)
 }
 \arguments{
 \item{pkg}{path to package to upload}
+
+\item{new_deploy}{Boolean. if TRUE creates a new deployment even if}
+
+\item{...}{additinal parameters passed to rsconnect::deployApp}
 }
 \description{
 Deploy a compiled app to Shinyapps.io

@@ -1,10 +1,13 @@
 #' Deploy a compiled app to Shinyapps.io
 #'
 #' @param pkg path to package to upload
+#' @param new_deploy Boolean. if TRUE creates a new deployment even if
+#' @param ... additinal parameters passed to rsconnect::deployApp
 #'
 #' @export
 deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
-                                new_deploy = FALSE){
+                                new_deploy = FALSE,
+                                ...){
 
   ## check that app.R is correct and doesn't include build
   if(is_valid_app_r(pkg) == FALSE){
@@ -73,7 +76,8 @@ deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
 
   deploy_app(
     pkg,
-    new_deploy = new_deploy
+    new_deploy = new_deploy,
+    ...
   )
 
   invisible(0)
@@ -82,25 +86,27 @@ deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
 
 deploy_app <- function(
     pkg = pkgload::pkg_path(),
-    new_deploy = FALSE){
+    new_deploy,
+    ...){
   ## Check if has already been deployed.
 
   deployments <- rsconnect::deployments(pkg) [,c("account","name")]
   accounts <- rsconnect::accounts()
 
   if(new_deploy == TRUE || nrow(deployments) == 0){
-    new_deploy_app(pkg, accounts)
+    new_deploy_app(pkg, accounts, ...)
   } else if (nrow(deployments) == 1){
     rsconnect::deployApp(
       appDir = pkg,
       appFiles = "app.R",
+      ...
     )
   } else {
-    select_deploy_app(pkg, deployments)
+    select_deploy_app(pkg, deployments, ...)
   }
 }
 
-new_deploy_app <- function(pkg, accounts){
+new_deploy_app <- function(pkg, accounts, ...){
 
   account_name <- NULL
   if (nrow(accounts) > 1){
@@ -129,11 +135,12 @@ new_deploy_app <- function(pkg, accounts){
     appDir = pkg,
     appFiles = "app.R",
     appName = app_name,
-    account = account_name
+    account = account_name,
+    ...
   )
 }
 
-select_deploy_app <- function(pkg, deployments){
+select_deploy_app <- function(pkg, deployments, ...){
   deploy_choice <- readline(
     paste0(
       "Several deployments are available. Please select one: \n\t",
@@ -148,7 +155,8 @@ select_deploy_app <- function(pkg, deployments){
     appDir = pkg,
     appFiles = "app.R",
     appName = deployments$name[[deploy_choice]],
-    account = deployments$account[[deploy_choice]]
+    account = deployments$account[[deploy_choice]],
+    ...
   )
 
 }
