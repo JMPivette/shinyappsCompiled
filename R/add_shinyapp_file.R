@@ -15,20 +15,18 @@ add_shinyapps_file <- function(
   where_deploy <- fs::path(pkg, "app.R")
 
   ## Check if runapp_funct exists
-  if(is_exported(runapp_funct) == FALSE){
-    cli::cat_bullet(
+  if(is_exported(runapp_funct, pkg_path = pkg) == FALSE){
+    red_bullet(
       "Error: '", runapp_funct,
-      "()' is not an exported function from this package",
-      bullet = "cross", bullet_col = "red"
+      "()' is not an exported function from this package"
     )
     return(invisible())
   }
 
   ## Check if package is on Github (impossible to compile otherwise)
   if(github_path(pkg) == ""){
-    cli::cat_bullet(
-      "Error: In order to use 'shinyappsCompiled' your package should be on Github",
-      bullet = "cross", bullet_col = "red"
+    red_bullet(
+      "Error: In order to use 'shinyappsCompiled' your package should be on Github"
     )
     return(invisible())
   }
@@ -37,15 +35,14 @@ add_shinyapps_file <- function(
   ## Check if app.R file exists
   if(fs::file_exists(where_deploy)){
     overwrite <- readline(
-      paste("File 'app.R' already exists. Do you want to overwrite it? (Y/N) ")
+      "File 'app.R' already exists. Do you want to overwrite it? (Y/N) "
     )
     if(tolower(overwrite) != "y") {
       return(invisible())
     } else {
       fs::file_delete(where_deploy)
-      cli::cat_bullet(
-        "Deleting ", crayon::blue(where_deploy),
-        bullet = "tick", bullet_col = "green"
+      green_bullet(
+        "Deleting ", crayon::blue(where_deploy)
       )
     }
   }
@@ -57,8 +54,10 @@ add_shinyapps_file <- function(
   }
 
   usethis::use_build_ignore("rsconnect")
+  usethis::use_git_ignore("rsconnect")
+
   write_there("# Launch the ShinyApp")
-  write_there("# To deploy, run: shinyappsCompiled::deployCompiledApp()")
+  write_there("# To deploy, run: shinyappsCompiled::deploy_compiled_app()")
   write_there("")
   write_there("options( \"golem.app.prod\" = TRUE)")
   write_there(
@@ -68,14 +67,13 @@ add_shinyapps_file <- function(
     )
   )
 
-  cli::cat_bullet(
+  green_bullet(
     "File created at ",
-    crayon::blue(where_deploy),
-    bullet = "tick", bullet_col = "green"
+    crayon::blue(where_deploy)
   )
   cat("To deploy, run:\n")
   cli::cat_bullet(
-    "shinyappsCompiled::deployCompiledApp()"
+    "shinyappsCompiled::deploy_compiled_app()"
   )
 
 

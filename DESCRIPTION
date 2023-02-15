@@ -13,9 +13,13 @@ BugReports: https://github.com/JMPivette/shinyappsCompiled/issues
 Imports: 
     cli,
     crayon,
+    devtools,
     fs,
+    gert,
+    gh,
     pkgload,
     rlang,
+    rsconnect,
     usethis
 Encoding: UTF-8
 LazyData: true
