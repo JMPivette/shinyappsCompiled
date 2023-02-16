@@ -89,8 +89,13 @@ deploy_app <- function(
     pkg = pkgload::pkg_path(),
     new_deploy,
     ...){
-  ## Check if has already been deployed.
+  ## Synchronise with server
+  cli::cat_bullet(
+    "Sync application list with shinyapps.io server..."
+  )
+  try(rsconnect::syncAppMetadata(pkg))
 
+  ## Check if has already been deployed.
   deployments <- rsconnect::deployments(pkg) [,c("account","name")]
   accounts <- rsconnect::accounts()
 
@@ -145,7 +150,7 @@ select_deploy_app <- function(pkg, deployments, ...){
   deploy_choice <- readline(
     paste0(
       "Several deployments are available. Please select one: \n\t",
-      paste(seq_along(accounts$name), ":",
+      paste(seq_along(deployments$name), ":",
             deployments$account, "/", deployments$name,
             collapse = ',\n\t')
     )
