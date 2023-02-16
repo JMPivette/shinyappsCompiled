@@ -126,16 +126,18 @@ new_deploy_app <- function(pkg, accounts, ...){
     account_name <- accounts$name[[account_choice]]
   }
 
+  default_pkg_name <- pkgload::pkg_name(pkg)
+
   app_name <- readline(
     paste0(
       "Enter an application name ",
       "or press enter to use default name (",
-      pkgload::pkg_name(pkg), ") "
+      default_pkg_name, ") "
     )
   )
 
   if (app_name == "")
-    app_name <- NULL
+    app_name <- default_pkg_name
 
   rsconnect::deployApp(
     appDir = pkg,
