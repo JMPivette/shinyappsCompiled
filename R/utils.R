@@ -14,48 +14,6 @@ is_exported <- function(fct,
   expected_line %in% readLines(fs::path(pkg_path, "NAMESPACE"))
 }
 
-#' Get Github path from repository
-#'
-#' @param pkg_path path to repository
-#'
-#' @return a character vector with Github repository information
-#'
-#' @examples github_path()
-github_path <- function(pkg_path = pkgload::pkg_path()){
-
-  git_URL <- gert::git_remote_info(repo = pkg_path)$url |>
-    gsub(pattern = "\\.git$|^.*\\:\\/\\/:", replacement = "")
-
-  if(grepl("github.com", git_URL) == FALSE){
-    cli::cat_bullet(
-      "Warning this package is not on Github ",
-      crayon::blue(git_URL),
-      bullet = "warning", bullet_col = "orange"
-    )
-    return("")
-  }
-
-  git_DESC <- pkgload::pkg_desc(pkg_path)$get_urls() |>
-    gsub(pattern = "^.*\\:\\/\\/", replacement = "")
-
-  if(git_URL != git_DESC){
-    cli::cat_bullet(
-      "Git remote(",
-      crayon::blue(git_URL),
-      ") is different from DESCRIPTION file(",
-      crayon::blue(git_DESC),
-      bullet = "warning", bullet_col = "orange"
-    )
-  }
-
-  sub(
-    git_URL,
-    pattern = "^github.com/|^.*:",
-    replacement = ""
-  )
-
-}
-
 
 is_valid_app_r <- function(pkg_path = pkgload::pkg_path()){
   appr_path <- fs::path(pkg_path, "app.R")
@@ -63,10 +21,15 @@ is_valid_app_r <- function(pkg_path = pkgload::pkg_path()){
   if(!file.exists(appr_path))
     return(FALSE)
 
-  appr_content <- readLines(fs::path(pkg_path, "app.R"))
+  appr_content <- readLines(appr_path)
+
+  expected_content <- paste0(
+    "^library\\(",
+    pkgload::pkg_name(pkg_path)
+  )
 
   !any(grepl("^pkgload::load", appr_content)) &&
-    any(grepl(pkgload::pkg_name(), appr_content))
+    any(grepl(expected_content, appr_content))
 
 }
 

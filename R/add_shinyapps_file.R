@@ -12,6 +12,7 @@ add_shinyapps_file <- function(
     runapp_funct = "run_app"
 ) {
 
+  pk_name <- pkgload::pkg_name(pkg)
   where_deploy <- fs::path(pkg, "app.R")
 
   ## Check if runapp_funct exists
@@ -59,10 +60,13 @@ add_shinyapps_file <- function(
   write_there("# Launch the ShinyApp")
   write_there("# To deploy, run: shinyappsCompiled::deploy_compiled_app()")
   write_there("")
+  write_there(
+    paste0("library(", pk_name, ")")
+  )
   write_there("options( \"golem.app.prod\" = TRUE)")
   write_there(
     paste0(
-      pkgload::pkg_name(),
+      pk_name,
       "::run_app() # add parameters here (if any)"
     )
   )

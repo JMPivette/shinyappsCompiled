@@ -13,7 +13,7 @@ deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
   if(is_valid_app_r(pkg) == FALSE){
     red_bullet(
       "File 'app.R' doesn't seems to be valid. Please run ",
-      crayon::yellow("'shinyappsCompiled::add_shinyapp_file()'"),
+      crayon::yellow("'shinyappsCompiled::add_shinyapps_file()'"),
       " to overwrite"
     )
     return(invisible())
@@ -62,6 +62,7 @@ deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
     repo = gh_repo,
     ref = commit_sha,
     force = TRUE,
+    quiet = TRUE,
     auth_token = gh_token()
   )
 
