@@ -8,7 +8,7 @@
 deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
                                 new_deploy = FALSE,
                                 ...){
-
+  pk_name <- pkgload::pkg_name(pkg)
   ## check that app.R is correct and doesn't include build
   if(is_valid_app_r(pkg) == FALSE){
     red_bullet(
@@ -55,16 +55,21 @@ deploy_compiled_app <- function(pkg = pkgload::pkg_path(),
   }
 
   ## install from github (with right SHA)
+  unloadNamespace(pk_name)
   commit_sha <- gert::git_commit_id()
-  cli::cat_bullet("Installing ", gh_repo, " from Github")
+  github_sha <- packageDescription(pk_name)$GithubSHA1
 
-  devtools::install_github(
-    repo = gh_repo,
-    ref = commit_sha,
-    force = TRUE,
-    quiet = TRUE,
-    auth_token = gh_token()
-  )
+  if(is.null(github_sha) || commit_sha != github_sha){
+    cli::cat_bullet("Installing ", gh_repo, " from Github")
+
+    devtools::install_github(
+      repo = gh_repo,
+      ref = commit_sha,
+      force = TRUE,
+      quiet = TRUE,
+      auth_token = gh_token()
+    )
+  }
 
   green_bullet(
     "Package installed from Github ",
@@ -121,8 +126,9 @@ new_deploy_app <- function(pkg, accounts, ...){
         "Several Shinyapps accounts are available. Please select one: \n\t",
         paste(seq_along(accounts$name), ":", accounts$name, collapse = ',\n\t')
       )
-    ) |>
-      as.numeric()
+    )
+
+    account_choice <- as.numeric(account_choice)
     account_name <- accounts$name[[account_choice]]
   }
 
