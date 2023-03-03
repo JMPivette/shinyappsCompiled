@@ -124,7 +124,8 @@ new_deploy_app <- function(pkg, accounts, ...){
     account_choice <- readline(
       paste0(
         "Several Shinyapps accounts are available. Please select one: \n\t",
-        paste(seq_along(accounts$name), ":", accounts$name, collapse = ',\n\t')
+        paste(seq_along(accounts$name), ":", accounts$name, collapse = ',\n\t'),
+        "\n"
       )
     )
 
@@ -160,7 +161,8 @@ select_deploy_app <- function(pkg, deployments, ...){
       "Several deployments are available. Please select one: \n\t",
       paste(seq_along(deployments$name), ":",
             deployments$account, "/", deployments$name,
-            collapse = ',\n\t')
+            collapse = ',\n\t'),
+      "\n"
     )
   ) |>
     as.numeric()

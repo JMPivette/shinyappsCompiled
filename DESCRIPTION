@@ -1,7 +1,7 @@
 Type: Package
 Package: shinyappsCompiled
 Title: Deploy Golem Application with C++ to shinyapps.io
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     person("Jean-Marie", "Pivette", , "jmpivette@gmail.com", role = c("cre", "aut"))
 Description: This package is used to deployed Golem application that uses
